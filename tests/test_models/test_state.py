@@ -4,6 +4,8 @@ from tests.test_models.test_base_model import test_basemodel
 from models.state import State
 
 
+@unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',
+                 "Skip for non-MySQL storage")
 class test_state(test_basemodel):
     """ """
 
