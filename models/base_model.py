@@ -1,44 +1,44 @@
 #!/usr/bin/python3
-"""This module defines a base class for all models in our hbnb clone"""
-import uuid
+"""Base model module"""
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, String, DateTime
 from datetime import datetime
+import models
+import uuid
+
+Base = declarative_base()
 
 
 class BaseModel:
-    """A base class for all hbnb models"""
-    def __init__(self, *args, **kwargs):
-        """Instatntiates a new model"""
-        if not kwargs:
-            from models import storage
-            self.id = str(uuid.uuid4())
-            self.created_at = datetime.now()
-            self.updated_at = datetime.now()
-            storage.new(self)
-        else:
-            kwargs['updated_at'] = datetime.strptime(kwargs['updated_at'],
-                                                     '%Y-%m-%dT%H:%M:%S.%f')
-            kwargs['created_at'] = datetime.strptime(kwargs['created_at'],
-                                                     '%Y-%m-%dT%H:%M:%S.%f')
-            del kwargs['__class__']
-            self.__dict__.update(kwargs)
+    """Base model class"""
 
-    def __str__(self):
-        """Returns a string representation of the instance"""
-        cls = (str(type(self)).split('.')[-1]).split('\'')[0]
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
+    id = Column(String(60), nullable=False, primary_key=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
+
+    def __init__(self, *args, **kwargs):
+        """Class constructor"""
+        self.id = str(uuid.uuid4())
+        self.created_at = self.updated_at = datetime.utcnow()
+        if kwargs:
+            for k, v in kwargs.items():
+                if k not in ["id", "created_at", "updated_at"]:
+                    setattr(self, k, v)
 
     def save(self):
-        """Updates updated_at with current time when instance is changed"""
-        from models import storage
-        self.updated_at = datetime.now()
-        storage.save()
+        """Updates updated_at with current time"""
+        self.updated_at = datetime.utcnow()
+        models.storage.new(self)
+        models.storage.save()
+
+    def delete(self):
+        """Deletes the current instance from storage"""
+        models.storage.delete(self)
 
     def to_dict(self):
-        """Convert instance into dict format"""
-        dictionary = {}
-        dictionary.update(self.__dict__)
-        dictionary.update({'__class__':
-                          (str(type(self)).split('.')[-1]).split('\'')[0]})
-        dictionary['created_at'] = self.created_at.isoformat()
-        dictionary['updated_at'] = self.updated_at.isoformat()
-        return dictionary
+        """Returns a dictionary representation of the instance"""
+        result = dict(self.__dict__)
+        result.pop("_sa_instance_state", None)
+        result["created_at"] = self.created_at.isoformat()
+        result["updated_at"] = self.updated_at.isoformat()
+        return result
