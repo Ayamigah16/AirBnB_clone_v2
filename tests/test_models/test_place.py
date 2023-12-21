@@ -2,6 +2,8 @@
 """ """
 from tests.test_models.test_base_model import test_basemodel
 from models.place import Place
+import unittest
+import os
 
 
 @unittest.skipIf(os.getenv('HBNB_TYPE_STORAGE') != 'db',

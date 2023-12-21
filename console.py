@@ -73,7 +73,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] is '{' and pline[-1] is'}'\
+                    if pline[0] is '{' and pline[-1] is '}' \
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -113,18 +113,62 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
 
-    def do_create(self, args):
-        """ Create an object of any class"""
+    def do_create(self, arg):
+        """
+        Creates a new instance of a specified class with given parameters.
+        Usage: create <Class name> <param 1> <param 2> <param 3>...
+        Param syntax: <key name>=<value>
+        Value syntax:
+        - String: "<value>" => starts with a double quote
+        any double quote inside the value must be escaped with a backslash \
+        all underscores _ must be replaced by spaces
+        - Float: <unit>.<decimal> => contains a dot .
+        - Integer: <number> => default case
+        If any parameter doesn’t fit these requirements or can’t be recognized
+        correctly by your program, it must be skipped
+        """
+        args = arg.split()
         if not args:
             print("** class name missing **")
             return
-        elif args not in HBNBCommand.classes:
+
+        class_name = args[0]
+        if class_name not in self.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args]()
-        storage.save()
+
+        args = " ".join(args[1:]).split(",")
+        kwargs = {}
+        for item in args:
+            key_value = item.split("=")
+            if len(key_value) == 2:
+                key, value = key_value
+                key = key.strip()
+                value = value.strip().replace('"', '').replace('_', ' ')
+
+                # Handle special cases for String, Float, and Integer values
+                if value.startswith('"') and value.endswith('"'):
+                    # String: Remove quotes and replace underscores with spaces
+                    value = value[1:-1].replace('\\"', '"')
+                elif '.' in value:
+                    # Float: Parse as float
+                    value = float(value)
+                else:
+                    # Integer: Parse as int
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        print("** invalid parameter value **")
+                        return
+
+                    kwargs[key] = value
+            else:
+                print("** invalid parameter syntax **")
+                return
+
+        new_instance = self.classes[class_name](**kwargs)
+        new_instance.save()
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -319,6 +363,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
