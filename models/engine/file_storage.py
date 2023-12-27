@@ -40,6 +40,7 @@ class FileStorage:
             with open(FileStorage.__file_path, mode="r", encoding="utf-8") as f:
                 deserial_dict = json.load(f)
                 for k, v in deserial_dict.items():
+                    print(f"Key: {k}, Value: {v}")
                     class_name = v["__class__"]
                     obj = eval(class_name + "(**v)")
                     FileStorage.__objects[k] = obj

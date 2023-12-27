@@ -41,11 +41,15 @@ class HBNBCommand(cmd.Cmd):
         Usage: <class name>.<command>([<id> [<*args> or <**kwargs>]])
         (Brackets denote optional fields in usage example.)
         """
-        _cmd = _cls = _id = _args = ''  # initialize line elements
+        _cmd = _cls = _id = _args = ''
+        # initialize line elements
 
         # scan for general formating - i.e '.', '(', ')'
         if not ('.' in line and '(' in line and ')' in line):
             return line
+
+        # Remove comments (lines starting with #)
+        line = line.split('#')[0].strip()
 
         try:  # parse line left to right
             pline = line[:]  # parsed line
@@ -62,7 +66,8 @@ class HBNBCommand(cmd.Cmd):
             pline = pline[pline.find('(') + 1:pline.find(')')]
             if pline:
                 # partition args: (<id>, [<delim>], [<*args>])
-                pline = pline.partition(', ')  # pline convert to tuple
+                pline = pline.partition(', ')
+                # pline convert to tuple
 
                 # isolate _id, stripping quotes
                 _id = pline[0].replace('\"', '')
@@ -144,7 +149,7 @@ class HBNBCommand(cmd.Cmd):
             if len(key_value) == 2:
                 key, value = key_value
                 key = key.strip()
-                value = value.strip().replace('"', '').replace('_', ' ')
+                value = value.strip()
 
                 # Handle special cases for String, Float, and Integer values
                 if value.startswith('"') and value.endswith('"'):
@@ -246,7 +251,8 @@ class HBNBCommand(cmd.Cmd):
         print_list = []
 
         if args:
-            args = args.split(' ')[0]  # remove possible trailing args
+            args = args.split(' ')[0]
+            # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
@@ -257,7 +263,11 @@ class HBNBCommand(cmd.Cmd):
             for k, v in storage._FileStorage__objects.items():
                 print_list.append(str(v))
 
-        print(print_list)
+        if print_list:
+            for obj in print_list:
+                print(obj)
+        else:
+            print("[]")
 
     def help_all(self):
         """ Help information for the all command """

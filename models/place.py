@@ -1,7 +1,8 @@
 #!/usr/bin/python3
 """Place module"""
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, Integer, Float, ForeignKey
+from sqlalchemy import (Column, String, Integer,
+                        Float, ForeignKey, Table)
 from sqlalchemy.orm import relationship
 
 metadata = Base.metadata
