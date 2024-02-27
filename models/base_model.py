@@ -17,13 +17,26 @@ class BaseModel:
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
     def __init__(self, *args, **kwargs):
-        """Class constructor"""
-        self.id = str(uuid.uuid4())
-        self.created_at = self.updated_at = datetime.utcnow()
+        """Initialize a new instance of a BaseMOdel."""
+        # checking if key passed is not "__class__"
         if kwargs:
-            for k, v in kwargs.items():
-                if k not in ["id", "created_at", "updated_at"]:
-                    setattr(self, k, v)
+            for key, value in kwargs.items():
+                if key != '__class__':
+                    if key == "created_at" or key == 'updated_at':
+                        if isinstance(value, str):
+                            setattr(self, key, datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f"))
+                        else:
+                            setattr(self, key, value)
+                    else:
+                        setattr(self, key, value)        
+        
+        # """Class constructor"""
+        # self.id = str(uuid.uuid4())
+        # self.created_at = self.updated_at = datetime.utcnow()
+        # if kwargs:
+        #     for k, v in kwargs.items():
+        #         if k not in ["id", "created_at", "updated_at"]:
+        #             setattr(self, k, v)
 
     def save(self):
         """Updates updated_at with current time"""
