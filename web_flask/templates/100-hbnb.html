@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<HTML lang="en">
+    <HEAD>
+        <TITLE>HBNB</TITLE>
+        <LINK rel="stylesheet" type="text/css" href="/static/styles/4-common.css">
+        <LINK rel="stylesheet" type="text/css" href="/static/styles/3-header.css">
+        <LINK rel="stylesheet" type="text/css" href="/static/styles/3-footer.css">
+        <LINK rel="stylesheet" type="text/css" href="/static/styles/6-filters.css">
+        <LINK rel="stylesheet" type="text/css" href="/static/styles/8-places.css">
+    </HEAD>
+    <BODY>
+      <H3>States</H3>
+      <H4>&nbsp;</H4>
+      <UL>
+        {% for state in states %}
+            <LI>{{ state.id }}: <B>{{ state.name }}</B></LI>
+            {% for city in state.cities %}
+                <LI>{{ city.id }}: <B>{{ city.name }}</B></LI>
+            {% endfor %}
+        {% endfor %}
+      </UL>
+
+      <H3>Amenities</H3>
+      <H4>&nbsp;</H4>
+      <UL>
+        {% for amenity in amenities %}
+            <LI>{{ amenity.id }}: <B>{{ amenity.name }}</B></LI>
+        {% endfor %}
+      </UL>
+
+      <H3>Places</H3>
+      <H4>&nbsp;</H4>
+      <UL>
+        {% for place in places %}
+            <LI>{{ place.id }}: <B>{{ place.name }}</B></LI>
+        {% endfor %}
+      </UL>
+    </BODY>
+</HTML>
