@@ -24,11 +24,7 @@ class State(BaseModel, Base):
             obj_dict['name'] = self.name
             # Add any other state-specific attributes
             return obj_dict
-
-<<<<<<< HEAD
-    if os.getenv('HBNB_TYPE_STORAGE') != 'db':
-=======
->>>>>>> b84182446b6ee08e97e4c8847712e426e4c89e2d
+ 
         @property
         def cities(self):
             """Returns the list of City instances
