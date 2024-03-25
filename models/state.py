@@ -11,12 +11,11 @@ class State(BaseModel, Base):
 
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
-
+    cities = relationship(
+        "City",
+        back_populates="state", cascade="all, delete-orphan")
+    
     if os.getenv('HBNB_TYPE_STORAGE') != 'db':
-        cities = relationship(
-            "City",
-            back_populates="state", cascade="all, delete-orphan")
-
         def to_dict(self):
             """Return a dictionary representation of the object."""
             obj_dict = super().to_dict()
