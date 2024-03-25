@@ -4,6 +4,7 @@ from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from sqlalchemy.orm import relationship
 import os
+from models.__init__ import HBNB_TYPE_STORAGE
 
 
 class State(BaseModel, Base):
@@ -11,7 +12,9 @@ class State(BaseModel, Base):
 
     __tablename__ = "states"
     name = Column(String(128), nullable=False)
-    cities = relationship("City", back_populates="state", cascade="all, delete-orphan")
+    cities = relationship(
+        "City",
+        back_populates="state", cascade="all, delete-orphan")
 
     def to_dict(self):
         """Return a dictionary representation of the object."""
@@ -20,3 +23,12 @@ class State(BaseModel, Base):
         obj_dict['name'] = self.name
         # Add any other state-specific attributes
         return obj_dict
+
+    if HBNB_TYPE_STORAGE != 'db':
+        @property
+        def cities(self):
+            """Returns the list of City instances
+            with state_id equals to the current State.id"""
+            return [
+                city for city in storage.all(
+                    City).values() if city.state_id == self.id]

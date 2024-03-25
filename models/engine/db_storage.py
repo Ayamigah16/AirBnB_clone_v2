@@ -29,7 +29,8 @@ class DBStorage:
         """Queries on the current database session all objects
         depending on the class name"""
         result = {}
-        classes = [cls] if cls else [State, City]  # Add other classes as needed
+        classes = [cls] if cls else [State, City]
+        # Add other classes as needed
         for c in classes:
             objects = self.__session.query(c).all()
             for obj in objects:
@@ -54,7 +55,8 @@ class DBStorage:
         """Creates all tables in the database and creates the current
         database session from the engine"""
         Base.metadata.create_all(self.__engine)
-        Session = sessionmaker(bind=self.__engine, expire_on_commit=False)
+        Session = sessionmaker(
+            bind=self.__engine, expire_on_commit=False)
         self.__session = scoped_session(Session)()
 
     def close(self):

@@ -21,7 +21,9 @@ class FileStorage:
         """Returns the dictionary __objects"""
         if cls is None:
             return FileStorage.__objects
-        return {k: v for k, v in FileStorage.__objects.items() if isinstance(v, cls)}
+        return {
+            k: v for k,
+            v in FileStorage.__objects.items() if isinstance(v, cls)}
 
     def new(self, obj):
         """Sets in __objects the obj with key <obj class name>.id"""
@@ -30,14 +32,19 @@ class FileStorage:
 
     def save(self):
         """Serializes __objects to the JSON file (path: __file_path)"""
-        serial_dict = {k: v.to_dict() for k, v in FileStorage.__objects.items()}
-        with open(FileStorage.__file_path, mode="w", encoding="utf-8") as f:
+        serial_dict = {
+            k: v.to_dict() for k, v in FileStorage.__objects.items()}
+        with open(
+                FileStorage.__file_path,
+                mode="w", encoding="utf-8") as f:
             json.dump(serial_dict, f)
 
     def reload(self):
         """Deserializes the JSON file to __objects"""
         try:
-            with open(FileStorage.__file_path, mode="r", encoding="utf-8") as f:
+            with open(
+                    FileStorage.__file_path,
+                    mode="r", encoding="utf-8") as f:
                 deserial_dict = json.load(f)
                 for k, v in deserial_dict.items():
                     print(f"Key: {k}, Value: {v}")
@@ -54,6 +61,10 @@ class FileStorage:
             if key in FileStorage.__objects:
                 del FileStorage.__objects[key]
                 self.save()
+
+    def close(self):
+        """Deserializes the JSON file to objects"""
+        self.reload()
 
 
 # if __name__ == "__main__":
