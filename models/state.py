@@ -15,23 +15,23 @@ class State(BaseModel, Base):
         "City",
         back_populates="state", cascade="all, delete-orphan")
     
-    if os.getenv('HBNB_TYPE_STORAGE') != 'db':
-        def to_dict(self):
-            """Return a dictionary representation of the object."""
-            obj_dict = super().to_dict()
-            obj_dict['__class__'] = type(self).__name__
-            obj_dict['name'] = self.name
-            # Add any other state-specific attributes
-            return obj_dict
- 
-        @property
-        def cities(self):
-            """Returns the list of City instances
-            with state_id equals to the current State.id"""
-            from models import storage
-            from models.city import City
-            return [
-                city for city in storage.all(
-                    City).values() if city.state_id == self.id]
-    else:
-        cities = []
+    # if os.getenv('HBNB_TYPE_STORAGE') != 'db':
+    def to_dict(self):
+        """Return a dictionary representation of the object."""
+        obj_dict = super().to_dict()
+        obj_dict['__class__'] = type(self).__name__
+        obj_dict['name'] = self.name
+        # Add any other state-specific attributes
+        return obj_dict
+
+    # @property
+    # def cities(self):
+    #     """Returns the list of City instances
+    #     with state_id equals to the current State.id"""
+    #     from models import storage
+    #     from models.city import City
+    #     return [
+    #         city for city in storage.all(
+    #             City).values() if city.state_id == self.id]
+    # else:
+    #     cities = []
