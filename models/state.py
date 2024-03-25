@@ -24,11 +24,13 @@ class State(BaseModel, Base):
         # Add any other state-specific attributes
         return obj_dict
 
-    if HBNB_TYPE_STORAGE != 'db':
+    if os.getenv(HBNB_TYPE_STORAGE) != 'db':
         @property
         def cities(self):
             """Returns the list of City instances
             with state_id equals to the current State.id"""
+            from models import storage
+            from models.city import City
             return [
                 city for city in storage.all(
                     City).values() if city.state_id == self.id]
